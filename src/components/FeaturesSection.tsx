@@ -1,3 +1,7 @@
+"use client"
+
+import { motion } from "framer-motion"
+
 export default function FeaturesSection() {
     const features = [
         {
@@ -22,12 +26,19 @@ export default function FeaturesSection() {
                 <h2 className='text-3xl font-bold text-white mb-4'>Everything your business needs</h2>
                 <p className='text-zinc-400 text-lg'>Built to help you focus on what matters — your customers.</p>
                 <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8'>
-                    {features.map((feature) => (
-                        <div key={feature.title} className='bg-zinc-800 rounded-xl p-8'>
+                    {features.map((feature, index) => (
+                        <motion.div
+                            key={feature.title}
+                            className='bg-zinc-800 rounded-xl p-8'
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: index * 0.15 }}
+                        >
                             <div className='text-4xl mb-4'>{feature.icon}</div>
                             <h3 className='text-xl font-semibold text-white mb-3'>{feature.title}</h3>
                             <p className='text-zinc-400 leading-relaxed'>{feature.description}</p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>

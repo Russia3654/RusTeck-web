@@ -1,10 +1,19 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
 export default function Navbar() {
     return (
         <nav className='sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800'>
             <div className='max-w-6xl mx-auto px-6 py-4 flex items-center justify-between'>
-                <Link href="/" className='text-xl font-bold text-white'>RusTech</Link>
+                <Link href="/">
+                    <Image
+                        src="/RusTech-Logo.png"
+                        alt="RusTech logo"
+                        width={160}
+                        height={48}
+                        className="h-10 w-auto"
+                    />
+                </Link>
                 <div className='flex items-center gap-8'>
                     <Link href="/" className='text-zinc-400 hover:text-white transition-colors text-sm'>Home</Link>
                     <Link href="/pricing" className='text-zinc-400 hover:text-white transition-colors text-sm'>Pricing</Link>
