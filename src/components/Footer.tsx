@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
     return (
-        <footer className='bg-zinc-950 border-t border-zinc-800 py-12 px-6'>
+        <footer className='bg-zinc-950/85 backdrop-blur-sm relative z-10 border-t border-zinc-800 py-12 px-6'>
             <div className='max-w-6xl mx-auto'>
                 <div className='flex items-center justify-between mb-8'>
                     <span className='text-white font-bold text-lg'>RusTech</span>

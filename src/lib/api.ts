@@ -6,13 +6,13 @@ async function apiFetch(path: string, options?: RequestInit) {
         },
         ...options,
     });
-    if  (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
+    if (!response.ok) {
+        throw response;
     }
     return response.json();
 }
 
-export function loginTenant(tenantId: number, email: string, password: string) {
+export function loginTenant(tenantId: string, email: string, password: string) {
     const credentials = { email, password };
     return apiFetch(`/api/v1/auth/tenants/${tenantId}/login`, {
         method: 'POST',
@@ -21,14 +21,14 @@ export function loginTenant(tenantId: number, email: string, password: string) {
     })
 }
 
-export function refreshToken(tenantId:number) {
+export function refreshToken(tenantId: string) {
     return apiFetch(`/api/v1/auth/tenants/${tenantId}/refresh`, {
         method: 'POST',
         credentials: "include",
     })
 }
 
-export function logoutTenant(tenantId: number) {
+export function logoutTenant(tenantId: string) {
     return apiFetch(`/api/v1/auth/tenants/${tenantId}/logout`, {
         method: 'POST',
         credentials: "include",

@@ -42,80 +42,75 @@ function generateTraces(w: number, h: number): Segment[] {
 export default function CircuitBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
+    useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    const traces = generateTraces(canvas.width, canvas.height);
-    const particles: Particle[] = [];
-
-    const spawn = () => {
-      particles.push({
-        segIndex: Math.floor(Math.random() * traces.length),
-        progress: 0,
-        speed: 0.003 + Math.random() * 0.007,
-      });
-    };
-
-    for (let i = 0; i < 15; i++) spawn();
-
     let animFrame: number;
-    let lastSpawn = 0;
 
-    const draw = (ts: number) => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const startAnimation = () => {
+      cancelAnimationFrame(animFrame);
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
 
-      // Base traces
-      ctx.strokeStyle = "rgba(99,102,241,0.12)";
-      ctx.lineWidth = 1.5;
-      traces.forEach(s => {
-        ctx.beginPath();
-        ctx.moveTo(s.x1, s.y1);
-        ctx.lineTo(s.x2, s.y2);
-        ctx.stroke();
-      });
+      const traces = generateTraces(canvas.width, canvas.height);
+      const particles: Particle[] = [];
 
-      // Junction dots at segment endpoints
-      traces.forEach(s => {
-        [{ x: s.x1, y: s.y1 }, { x: s.x2, y: s.y2 }].forEach(({ x, y }) => {
-          ctx.beginPath();
-          ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(129,140,248,0.3)";
-          ctx.fill();
+      const spawn = () => {
+        particles.push({
+          segIndex: Math.floor(Math.random() * traces.length),
+          progress: 0,
+          speed: 0.003 + Math.random() * 0.007,
         });
-      });
+      };
 
-      // Traveling particles
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.progress += p.speed;
-        if (p.progress >= 1) { particles.splice(i, 1); continue; }
+      for (let i = 0; i < 15; i++) spawn();
+      let lastSpawn = 0;
 
-        const s = traces[p.segIndex];
-        const x = s.x1 + (s.x2 - s.x1) * p.progress;
-        const y = s.y1 + (s.y2 - s.y1) * p.progress;
+      const draw = (ts: number) => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = "#818cf8";
-        ctx.beginPath();
-        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-        ctx.fillStyle = "#c7d2fe";
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      }
+        ctx.strokeStyle = "rgba(168,85,247,0.12)";
+        ctx.lineWidth = 1.5;
+        traces.forEach(s => {
+          ctx.beginPath(); ctx.moveTo(s.x1, s.y1); ctx.lineTo(s.x2, s.y2); ctx.stroke();
+        });
 
-      if (ts - lastSpawn > 200 && particles.length < 30) { spawn(); lastSpawn = ts; }
+        traces.forEach(s => {
+          [{ x: s.x1, y: s.y1 }, { x: s.x2, y: s.y2 }].forEach(({ x, y }) => {
+            ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = "rgba(192,132,252,0.3)"; ctx.fill();
+          });
+        });
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.progress += p.speed;
+          if (p.progress >= 1) { particles.splice(i, 1); continue; }
+          const s = traces[p.segIndex];
+          const x = s.x1 + (s.x2 - s.x1) * p.progress;
+          const y = s.y1 + (s.y2 - s.y1) * p.progress;
+          ctx.shadowBlur = 20; ctx.shadowColor = "#d946ef";
+          ctx.beginPath(); ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = "#f0abfc"; ctx.fill(); ctx.shadowBlur = 0;
+        }
+
+        if (ts - lastSpawn > 200 && particles.length < 30) { spawn(); lastSpawn = ts; }
+        animFrame = requestAnimationFrame(draw);
+      };
+
       animFrame = requestAnimationFrame(draw);
     };
 
-    animFrame = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(animFrame);
+    startAnimation();
+    window.addEventListener("resize", startAnimation);
+    return () => {
+      cancelAnimationFrame(animFrame);
+      window.removeEventListener("resize", startAnimation);
+    };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />;
+  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-[-1]" />;
 }

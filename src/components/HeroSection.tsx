@@ -1,13 +1,12 @@
 "use client"
 
 import Link from 'next/link'
-import CircuitBackground from './CircuitBackground'
+// import CircuitBackground from './CircuitBackground'
 import { motion } from "framer-motion"
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen bg-zinc-950 flex items-center justify-center px-6">
-      <CircuitBackground />
+    <section className="relative min-h-screen  flex items-center justify-center px-6">
       <div className="relative z-10 max-w-3xl mx-auto text-center">
         <motion.h1
           className='text-5xl font-bold text-white leading-tight mb-6'

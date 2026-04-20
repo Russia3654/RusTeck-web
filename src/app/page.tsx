@@ -1,3 +1,4 @@
+import CircuitBackground from "@/components/CircuitBackground";
 import FeaturesSection from "@/components/FeaturesSection";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
@@ -7,6 +8,7 @@ import PricingPreview from "@/components/PricingPreview";
 export default function Home() {
   return (
     <main>
+      <CircuitBackground />
       <Navbar />
       <HeroSection />
       <FeaturesSection />

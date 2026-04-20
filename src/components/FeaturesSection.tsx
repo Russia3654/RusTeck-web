@@ -21,7 +21,7 @@ export default function FeaturesSection() {
         },
     ]
     return (
-        <section className='bg-zinc-900 py-24 px-6'>
+        <section className='bg-zinc-900/60 backdrop-blur-sm relative z-10 py-24 px-6'>
             <div className='max-w-6xl mx-auto text-center mb-16'>
                 <h2 className='text-3xl font-bold text-white mb-4'>Everything your business needs</h2>
                 <p className='text-zinc-400 text-lg'>Built to help you focus on what matters — your customers.</p>
@@ -29,7 +29,7 @@ export default function FeaturesSection() {
                     {features.map((feature, index) => (
                         <motion.div
                             key={feature.title}
-                            className='bg-zinc-800 rounded-xl p-8'
+                            className='bg-zinc-800/70 rounded-xl p-8'
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
