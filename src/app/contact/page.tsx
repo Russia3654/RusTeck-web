@@ -7,8 +7,6 @@ import { Suspense, useState } from "react";
 const setupOptions = ["", "Starter", "Standard", "Advanced"];
 const monthlyOptions = ["", "Basic", "Pro", "Pro Max"];
 
-const API_URL = process.env.NEXT_PUBLIC_RUSTECH_API_URL ?? "";
-
 function ContactForm() {
     const searchParams = useSearchParams();
 

@@ -17,7 +17,8 @@ export async function POST(request: NextRequest) {
             { status: slugRes.status }
         );
     }
-    const { tenant_id } = await slugRes.json() as { tenant_id: string };
+    // todo: recheck for correctness
+    const { tenant_id, modules } = await slugRes.json() as { tenant_id: string; modules: string[] };
 
     const loginRes = await fetch(`${API_URL}/api/v1/auth/tenants/${tenant_id}/login`, {
         method: "POST",
@@ -41,7 +42,8 @@ export async function POST(request: NextRequest) {
     }
 
     return new Response(
-        JSON.stringify({ access_token: data.access_token, tenant_id, token_type: data.token_type }),
+        // todo: recheck for correctness
+        JSON.stringify({ access_token: data.access_token, tenant_id, token_type: data.token_type, modules}),
         { status: 200, headers: responseHeaders }
     );
 }

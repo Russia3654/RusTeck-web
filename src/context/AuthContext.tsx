@@ -5,6 +5,9 @@ import { createContext, useCallback, useContext, useState } from "react";
 interface AuthContextType {
     accessToken: string | null;
     tenantId: string | null;
+    tenantSlug: string | null;
+    // todo: recheck for correctness
+    modules: string[] | null;
     login: (slug: string, email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     refresh: () => Promise<void>;
@@ -15,6 +18,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [tenantId, setTenantId] = useState<string | null>(null);
+    const [tenantSlug, setTenantSlug] = useState<string | null>(null);
+    const [modules, setModules] = useState<string[] | null>(null);
 
     async function login(slug: string, email: string, password: string) {
         const res = await fetch("/api/login", {
@@ -23,9 +28,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             body: JSON.stringify({ slug, email, password }),
         });
         if (!res.ok) throw res;
-        const data = await res.json() as { access_token: string; tenant_id: string };
+        // todo: recheck for correctness
+        const data = await res.json() as { access_token: string; tenant_id: string;  modules: string[]};
         setAccessToken(data.access_token);
         setTenantId(data.tenant_id);
+        setTenantSlug(slug);
+        // todo: recheck for correctness
+        setModules(data.modules);
     }
 
     async function logout() {
@@ -37,6 +46,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         setAccessToken(null);
         setTenantId(null);
+        setTenantSlug(null);
+        // todo: recheck for correctness
+        setModules(null);
     }
 
 
@@ -58,7 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
     return (
-        <AuthContext.Provider value={{ accessToken, tenantId, login, logout, refresh }}>
+        <AuthContext.Provider value={{ accessToken, tenantId, tenantSlug, modules , login, logout, refresh }}>
             {children}
         </AuthContext.Provider>
     );
