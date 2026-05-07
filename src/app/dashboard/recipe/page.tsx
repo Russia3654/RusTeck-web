@@ -1,8 +1,6 @@
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useTenantFetch } from "@/hooks/useTenantFetch";
 
 interface Recipe {
     id: string;
@@ -13,27 +11,7 @@ interface Recipe {
 }
 
 export default function RecipesPage() {
-    const { accessToken, tenantId } = useAuth();
-    const router = useRouter();
-    const [recipes, setRecipes] = useState<Recipe[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!accessToken || !tenantId) return;
-        async function load() {
-            setLoading(true);
-            try {
-                const res = await fetch(`/backend/api/v1/tenants/${tenantId}/recipes`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                if (res.status === 401) { router.replace("/login"); return; }
-                if (res.ok) setRecipes(await res.json() as Recipe[]);
-            } finally {
-                setLoading(false);
-            }
-        }
-        load();
-    }, [accessToken, tenantId, router]);
+    const { data: recipes, loading, error } = useTenantFetch<Recipe>("recipes");
 
     return (
         <div className="p-8 space-y-6">
@@ -41,6 +19,9 @@ export default function RecipesPage() {
                 <h1 className="text-xl font-bold text-white">Recipes</h1>
                 <p className="text-zinc-400 text-sm mt-1">Your product recipes and batch configurations.</p>
             </div>
+            {error && (
+                <p role="alert" className="text-red-400 text-sm bg-red-950/40 border border-red-900/40 rounded-lg px-4 py-3">{error}</p>
+            )}
             <div className="bg-zinc-900/70 backdrop-blur-sm border border-zinc-800 rounded-xl overflow-hidden">
                 <div className="px-6 py-4 border-b border-zinc-800">
                     <h2 className="text-white font-medium text-sm">{loading ? "Loading…" : `${recipes.length} recipes`}</h2>
@@ -53,10 +34,10 @@ export default function RecipesPage() {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="text-zinc-500 text-xs border-b border-zinc-800">
-                                <th className="text-left px-6 py-3 font-medium">Name</th>
-                                <th className="text-left px-6 py-3 font-medium">Description</th>
-                                <th className="text-left px-6 py-3 font-medium">Batch size</th>
-                                <th className="text-left px-6 py-3 font-medium">Ingredients</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Name</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Description</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Batch size</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Ingredients</th>
                             </tr>
                         </thead>
                         <tbody>

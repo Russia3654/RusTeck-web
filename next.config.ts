@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
         return [
             {
                 source: "/backend/:path*",
-                destination: `${process.env.NEXT_PUBLIC_RUSTECH_API_URL}/:path*`,
+                destination: `${process.env.RUSTECH_API_URL}/:path*`,
             },
         ];
     },

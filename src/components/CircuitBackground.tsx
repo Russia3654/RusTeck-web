@@ -42,7 +42,7 @@ function generateTraces(w: number, h: number): Segment[] {
 export default function CircuitBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-    useEffect(() => {
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -104,13 +104,19 @@ export default function CircuitBackground() {
       animFrame = requestAnimationFrame(draw);
     };
 
+    let resizeTimer: ReturnType<typeof setTimeout>;
     startAnimation();
-    window.addEventListener("resize", startAnimation);
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(startAnimation, 150);
+    };
+    window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(animFrame);
-      window.removeEventListener("resize", startAnimation);
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-[-1]" />;
+  return <canvas aria-hidden="true" ref={canvasRef} className="fixed inset-0 w-full h-full pointer-events-none z-[-1]" />;
 }

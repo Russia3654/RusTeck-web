@@ -1,12 +1,12 @@
 import Link from 'next/link'
 export default function PricingPreview() {
     const features = [
-        {name: "Basic", price: "19$/month", description: "Hosting, SSL, backups, up to 5 users" },
-        {name: "Pro", price: "49$/month", description: "All Basic features, plus analytics and priority support" },
-        {name: "Pro Max", price: "99$/month", description: "All Pro features, plus custom domain" },
+        {name: "Basic", price: "19$/mo", description: "Hosting, SSL, backups, up to 5 users" },
+        {name: "Pro", price: "49$/mo", description: "All Basic features, plus analytics and priority support" },
+        {name: "Pro Max", price: "99$/mo", description: "All Pro features, plus custom domain" },
     ]
     return (
-        <section className='bg-zinc-950/70 backdrop-blur-sm relative z-10 py-24 px-6'>
+        <section aria-label="Pricing" className='bg-zinc-950/70 backdrop-blur-sm relative z-10 py-24 px-6'>
             <div className='max-w-6xl mx-auto text-center mb-16'>
                 <h2 className='text-3xl font-bold text-white mb-4'>Simple, transparent pricing</h2>
                 <p className='text-zinc-400 text-lg'>No hidden fees. Cancel anytime.</p>

@@ -28,14 +28,13 @@ const SIDEBAR_ITEMS = {
     },
 }
 
+type SidebarKey = keyof typeof SIDEBAR_ITEMS;
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { accessToken, tenantId, tenantSlug, logout, refresh } = useAuth();
+    const { accessToken, tenantId, tenantSlug, modules, logout, refresh } = useAuth();
     const router = useRouter();
     const pathname = usePathname();
     const [booting, setBooting] = useState(true);
-    // todo: recheck for correctness
-    const { modules } = useAuth();
-    type SidebarKey = keyof typeof SIDEBAR_ITEMS;
 
     useEffect(() => {
         async function boot() {
@@ -67,11 +66,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="flex h-screen bg-zinc-950 overflow-hidden">
             <aside className="w-60 shrink-0 border-r border-zinc-800 flex flex-col">
                 <div className="px-5 py-5 border-b border-zinc-800">
-                    <span className="text-white font-bold capitalize">{tenantSlug ?? "Dashboard"}</span>
+                    <span className="text-white font-bold capitalize">{tenantSlug?.replace(/-/g, " ") ?? "Dashboard"}</span>
                     <p className="text-zinc-500 text-xs mt-0.5">Tenant Dashboard</p>
                 </div>
-                <nav className="flex-1 px-2 py-3 space-y-0.5">
-                    {/* to recheck for correctness */}
+                <nav aria-label="Main navigation" className="flex-1 px-2 py-3 space-y-0.5">
                     {modules?.map((m) => {
                         if (!Object.prototype.hasOwnProperty.call(SIDEBAR_ITEMS, m)) return null;
                         const item = SIDEBAR_ITEMS[m as SidebarKey];

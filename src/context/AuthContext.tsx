@@ -6,7 +6,6 @@ interface AuthContextType {
     accessToken: string | null;
     tenantId: string | null;
     tenantSlug: string | null;
-    // todo: recheck for correctness
     modules: string[] | null;
     login: (slug: string, email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
@@ -16,10 +15,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-    const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [tenantId, setTenantId] = useState<string | null>(null);
-    const [tenantSlug, setTenantSlug] = useState<string | null>(null);
-    const [modules, setModules] = useState<string[] | null>(null);
+    const [accessToken, setAccessToken] = useState<string | null>(() =>
+    typeof window !== "undefined" ? sessionStorage.getItem("accessToken") : null
+);
+    const [tenantId, setTenantId] = useState<string | null>(() =>
+        typeof window !== "undefined" ? sessionStorage.getItem("tenantId") : null
+    );
+    const [tenantSlug, setTenantSlug] = useState<string | null>(() =>
+        typeof window !== "undefined" ? sessionStorage.getItem("tenantSlug") : null
+    );
+    const [modules, setModules] = useState<string[] | null>(() => {
+        if (typeof window === "undefined") return null;
+        const raw = sessionStorage.getItem("modules");
+        return raw ? JSON.parse(raw) as string[] : null;
+    });
 
     async function login(slug: string, email: string, password: string) {
         const res = await fetch("/api/login", {
@@ -28,13 +37,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             body: JSON.stringify({ slug, email, password }),
         });
         if (!res.ok) throw res;
-        // todo: recheck for correctness
-        const data = await res.json() as { access_token: string; tenant_id: string;  modules: string[]};
+
+        const data = await res.json() as { access_token: string; tenant_id: string; modules: string[] };
         setAccessToken(data.access_token);
+        sessionStorage.setItem("accessToken", data.access_token);
         setTenantId(data.tenant_id);
         setTenantSlug(slug);
-        // todo: recheck for correctness
+
         setModules(data.modules);
+        sessionStorage.setItem("tenantId", data.tenant_id);
+        sessionStorage.setItem("tenantSlug", slug);
+        sessionStorage.setItem("modules", JSON.stringify(data.modules));
     }
 
     async function logout() {
@@ -45,10 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             body: JSON.stringify({ tenant_id: tenantId }),
         });
         setAccessToken(null);
+        sessionStorage.removeItem("accessToken");
         setTenantId(null);
         setTenantSlug(null);
-        // todo: recheck for correctness
+
         setModules(null);
+        sessionStorage.removeItem("tenantId");
+        sessionStorage.removeItem("tenantSlug");
+        sessionStorage.removeItem("modules");
     }
 
 
@@ -61,7 +78,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         if (!res.ok) {
             setAccessToken(null);
+            sessionStorage.removeItem("accessToken");
             setTenantId(null);
+            sessionStorage.removeItem("tenantId");
+            sessionStorage.removeItem("tenantSlug");
+            sessionStorage.removeItem("modules");
             return;
         }
         const data = await res.json() as { access_token: string };
@@ -70,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
     return (
-        <AuthContext.Provider value={{ accessToken, tenantId, tenantSlug, modules , login, logout, refresh }}>
+        <AuthContext.Provider value={{ accessToken, tenantId, tenantSlug, modules, login, logout, refresh }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,6 +1,6 @@
 import { type NextRequest } from "next/server";
 
-const API_URL = process.env.NEXT_PUBLIC_RUSTECH_API_URL ?? "";
+const API_URL = process.env.RUSTECH_API_URL ?? "";
 
 export async function POST(request: NextRequest) {
     const { tenant_id } = await request.json() as { tenant_id?: string };
@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     return new Response(null, {
         status: 204,
         headers: {
-            "Set-Cookie": "refresh_token=; Path=/; HttpOnly; Max-Age=0",
+            "Set-Cookie": "session=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0",
         },
     });
 }

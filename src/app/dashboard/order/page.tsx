@@ -1,8 +1,6 @@
 "use client";
 
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useTenantFetch } from "@/hooks/useTenantFetch";
 
 interface OrderItem { recipe_id: string; quantity: number; }
 interface Order {
@@ -15,38 +13,17 @@ interface Order {
 
 function statusColor(status: string) {
     switch (status.toLowerCase()) {
-        case "pending":   return "text-yellow-400 bg-yellow-950/40 border-yellow-900/40";
+        case "pending": return "text-yellow-400 bg-yellow-950/40 border-yellow-900/40";
         case "confirmed": return "text-blue-400 bg-blue-950/40 border-blue-900/40";
         case "completed": return "text-green-400 bg-green-950/40 border-green-900/40";
         case "cancelled": return "text-red-400 bg-red-950/40 border-red-900/40";
-        default:          return "text-zinc-400 bg-zinc-800/40 border-zinc-700/40";
+        default: return "text-zinc-400 bg-zinc-800/40 border-zinc-700/40";
     }
 }
 
 export default function OrdersPage() {
-    const { accessToken, tenantId } = useAuth();
-    const router = useRouter();
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!accessToken || !tenantId) return;
-        async function load() {
-            setLoading(true);
-            try {
-                const res = await fetch(`/backend/api/v1/tenants/${tenantId}/orders`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                if (res.status === 401) { router.replace("/login"); return; }
-                if (res.ok) setOrders(await res.json() as Order[]);
-            } finally {
-                setLoading(false);
-            }
-        }
-        load();
-    }, [accessToken, tenantId, router]);
-
-    const pending   = orders.filter(o => o.status.toLowerCase() === "pending").length;
+    const { data: orders, loading, error } = useTenantFetch<Order>("orders");
+    const pending = orders.filter(o => o.status.toLowerCase() === "pending").length;
     const completed = orders.filter(o => o.status.toLowerCase() === "completed").length;
 
     return (
@@ -63,6 +40,9 @@ export default function OrdersPage() {
                     </div>
                 ))}
             </div>
+            {error && (
+                <p role="alert" className="text-red-400 text-sm bg-red-950/40 border border-red-900/40 rounded-lg px-4 py-3">{error}</p>
+            )}
             <div className="bg-zinc-900/70 backdrop-blur-sm border border-zinc-800 rounded-xl overflow-hidden">
                 <div className="px-6 py-4 border-b border-zinc-800">
                     <h2 className="text-white font-medium text-sm">All orders</h2>
@@ -75,10 +55,10 @@ export default function OrdersPage() {
                     <table className="w-full text-sm">
                         <thead>
                             <tr className="text-zinc-500 text-xs border-b border-zinc-800">
-                                <th className="text-left px-6 py-3 font-medium">Customer</th>
-                                <th className="text-left px-6 py-3 font-medium">Status</th>
-                                <th className="text-left px-6 py-3 font-medium">Delivery</th>
-                                <th className="text-left px-6 py-3 font-medium">Items</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Customer</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Status</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Delivery</th>
+                                <th scope="col" className="text-left px-6 py-3 font-medium">Items</th>
                             </tr>
                         </thead>
                         <tbody>

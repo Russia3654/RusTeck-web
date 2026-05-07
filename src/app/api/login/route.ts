@@ -1,6 +1,6 @@
 import { type NextRequest } from "next/server";
 
-const API_URL = process.env.NEXT_PUBLIC_RUSTECH_API_URL ?? "";
+const API_URL = process.env.RUSTECH_API_URL ?? "";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
@@ -41,8 +41,9 @@ export async function POST(request: NextRequest) {
         responseHeaders.set("Set-Cookie", setCookieHeader);
     }
 
+    responseHeaders.append("Set-Cookie", "session=1; Path=/; HttpOnly; SameSite=Strict; Max-Age=86400");
+
     return new Response(
-        // todo: recheck for correctness
         JSON.stringify({ access_token: data.access_token, tenant_id, token_type: data.token_type, modules}),
         { status: 200, headers: responseHeaders }
     );

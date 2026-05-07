@@ -1,6 +1,6 @@
 import { type NextRequest } from "next/server";
 
-const API_URL = process.env.NEXT_PUBLIC_RUSTECH_API_URL ?? "";
+const API_URL = process.env.RUSTECH_API_URL ?? "";
 
 export async function POST(request: NextRequest) {
     const { tenant_id } = await request.json() as { tenant_id?: string };

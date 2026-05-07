@@ -9,7 +9,7 @@ export default function Footer() {
                     <div className='flex items-center gap-6'>
                         <Link href="/" className='text-zinc-400 hover:text-white transition-colors text-sm'>Home</Link>
                         <Link href="/pricing" className='text-zinc-400 hover:text-white transition-colors text-sm'>Pricing</Link>
-                        <Link href="/login" className='text-zinc-400 hover:text-white transition-colors text-sm'>Login</Link>
+                        <Link href="/login" className='text-zinc-400 hover:text-white transition-colors text-sm'>Sign In</Link>
                     </div>
                 </div>
                 <div className='border-t border-zinc-800 pt-8 text-center'>

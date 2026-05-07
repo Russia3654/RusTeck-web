@@ -40,7 +40,7 @@ function ContactForm() {
                     email,
                     setup_plan: setup || null,
                     monthly_plan: monthly || null,
-                    message: message || null,
+                    message: message || "",
                 }),
             });
             if (!res.ok) throw new Error();
@@ -112,7 +112,7 @@ function ContactForm() {
                                 </div>
 
                                 {error && (
-                                    <p className="text-sm text-red-400">{error}</p>
+                                    <p role="alert" className="text-sm text-red-400">{error}</p>
                                 )}
                                 <button type="submit" disabled={loading} className="w-full bg-linear-to-r from-purple-600 to-pink-500 hover:from-purple-500 hover:to-pink-400 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg py-3 text-sm transition-all">
                                     {loading ? "Sending…" : "Send message"}

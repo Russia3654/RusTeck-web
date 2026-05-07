@@ -12,7 +12,7 @@ export default function PricingPage() {
     const monthlyPlans = [
         { name: "Basic", price: "$19/mo", description: "For small businesses", features: ["Hosting & SSL", "Backups", "Up to 3 users", "Email support"], cta: "Choose Basic", href: "/contact?monthly=Basic" },
         { name: "Pro", price: "$49/mo", description: "Most popular choice", features: ["All Basic features", "Analytics", "Up to 10 users", "Priority support"], highlighted: true, cta: "Choose Pro", href: "/contact?monthly=Pro" },
-        { name: "Pro Max", price: "$99/mo", description: "For growing businesses", features: ["All Pro features", "Custom domain", "Unlimited users", "Dedicated support", "SLA guarantee"], cta: "Choose Pro Max", href: "/contact?monthly=ProMax" },
+        { name: "Pro Max", price: "$99/mo", description: "For growing businesses", features: ["All Pro features", "Custom domain", "Unlimited users", "Dedicated support", "SLA guarantee"], cta: "Choose Pro Max", href: "/contact?monthly=Pro%20Max" },
     ]
     return (
         <div className="bg-zinc-950 min-h-screen relative">
